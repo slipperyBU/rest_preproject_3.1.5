@@ -1,11 +1,53 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html lang="en" xmlns:th="http://thymeleaf.org">
 <head>
-    <title>Spring Security Example</title>
+  <meta charset="UTF-8">
+  <title>Users</title>
+  <style>
+    table, th, td {
+      border: 1px solid;
+    }
+  </style>
 </head>
 <body>
-<h1>Welcome to Index PAGE!</h1>
 
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col">Name</th>
+    <th scope="col">Last Name</th>
+    <th scope="col">Age</th>
+    <th scope="col">Email</th>
+    <th scope="col">Address</th>
+    <th scope="col">Password</th>
+    <th scope="col">Operations</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr th:each="person: ${users}">
+    <td th:text="${person.getName()}"/>
+    <td th:text="${person.getLastName()}"/>
+    <td th:text="${person.getAge()}"/>
+    <td th:text="${person.getEmail()}"/>
+    <td th:text="${person.getAddress()}"/>
+    <td th:text="${person.getPassword()}"/>
 
+    <td>
+      <a th:href="@{admin/edit/{id} (id = ${person.getId()})}">
+        <input type="button" value="Edit"/>
+      </a>
+      <a th:method="DELETE" th:href="@{admin/deleteUser/{id}(id = ${person.getId()})}">
+        <input type="button" value="Delete"/>
+      </a>
+    </td>
+  </tr>
+  </tbody>
+</table>
+<a href="/admin/addNewUser">Create new person</a>
+
+<hr/>
+<form th:action="@{/logout}" th:method="POST">
+  <input type="submit" value="Logout">
+</form>
 </body>
 </html>
