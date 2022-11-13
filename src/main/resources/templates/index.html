@@ -1,53 +1,141 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://thymeleaf.org">
+<html lang="en" xmlns:th="http://thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- CSS only -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
   <title>Users</title>
-  <style>
-    table, th, td {
-      border: 1px solid;
-    }
-  </style>
 </head>
 <body>
+<div class="container-fluid">
+  <div class="row text-center" style="background-color: #3D4147;">
+    <div class="col-md-12">
+      <div class="row">
+        <div class="col-md-10 text-start">
+          <p style="color: white" class="lead" >
+            <span th:text="${userData.getEmail()}" class="fw-bold"></span> with role: <span th:text="${roleInfo}"></span>
+          </p>
+        </div>
+        <div class="col-md-2">
+          <form th:action="@{/logout}" th:method="POST">
+     <button type="submit" class="btn btn-link" style="float: right; color: lightgrey ">Logout</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <br/>
+  <div class="row" >
+    <div class="col-md-2">
+      <ul class="nav flex-column nav-pills">
+        <li class="nav-item">
+          <a class="nav-link active" th:href="@{/admin}">Admin</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" th:href="@{/user}">User</a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-md-10">
+      <h2>
+        Admin Panel
+      </h2>
+      <div class="card">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a class="nav-link active" id="admin-tab" data-toggle="tab" th:href="@{/admin}" role="tab" aria-selected="true">Users Table</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a class="nav-link" id="newUser-tab" data-toggle="tab" th:href="@{/admin/addNewUser}" role="tab" aria-selected="false">New User</a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body">
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active fw-bold" role="tabpanel" aria-labelledby="home-tab">All Users</div>
+            <hr/>
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Age</th>
+                <th scope="col">Email</th>
+                <th scope="col">Address</th>
+                <th scope="col">Role</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr th:each="person: ${users}">
+                <td th:text="${person.getId()}"/>
+                <td th:text="${person.getName()}"/>
+                <td th:text="${person.getLastName()}"/>
+                <td th:text="${person.getAge()}"/>
+                <td th:text="${person.getEmail()}"/>
+                <td th:text="${person.getAddress()}"/>
+                <td th:text="${person.getRoles()}"/>
 
-<table class="table">
-  <thead>
-  <tr>
-    <th scope="col">Name</th>
-    <th scope="col">Last Name</th>
-    <th scope="col">Age</th>
-    <th scope="col">Email</th>
-    <th scope="col">Address</th>
-    <th scope="col">Password</th>
-    <th scope="col">Operations</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="person: ${users}">
-    <td th:text="${person.getName()}"/>
-    <td th:text="${person.getLastName()}"/>
-    <td th:text="${person.getAge()}"/>
-    <td th:text="${person.getEmail()}"/>
-    <td th:text="${person.getAddress()}"/>
-    <td th:text="${person.getPassword()}"/>
-
-    <td>
-      <a th:href="@{admin/edit/{id} (id = ${person.getId()})}">
-        <input type="button" value="Edit"/>
-      </a>
-      <a th:method="DELETE" th:href="@{admin/deleteUser/{id}(id = ${person.getId()})}">
-        <input type="button" value="Delete"/>
-      </a>
-    </td>
-  </tr>
-  </tbody>
-</table>
-<a href="/admin/addNewUser">Create new person</a>
-
-<hr/>
-<form th:action="@{/logout}" th:method="POST">
-  <input type="submit" value="Logout">
-</form>
+                <td>
+                  <button type="button" class="btn btn-info" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                    Edit
+                  </button>
+                  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                      <div class="modal-content">
+                        <form  th:method="PATCH" th:action="@{/admin/update/{id}(id=${person.getId()})}">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="staticBackdropLabel">Edit User</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label class="sr-only" for="name">Enter name: </label>
+                            <input type="text" th:value="*{person.getName()}" name="name" id="name" class="form-control mb-2"/>
+                            <br/>
+                            <label class="sr-only" for="lastname">Enter last name: </label>
+                            <input type="text" th:value="*{person.getLastName()}" name="lastName" id="lastname" placeholder="Last Name" class="form-control mb-2"/>
+                            <br/>
+                            <label class="sr-only" for="age">Enter age: </label>
+                            <input type="text" th:value="*{person.getAge()}" name="age" id="age" placeholder="Age" class="form-control mb-2"/>
+                            <br/>
+                            <label class="sr-only" for="email">Enter email: </label>
+                            <input type="text" th:value="*{person.getEmail()}" name="email" id="email" placeholder="Email" class="form-control mb-2"/>
+                            <br/>
+                            <label class="sr-only" for="address">Enter address: </label>
+                            <input type="text" th:value="*{person.getAddress()}" name="address" id="address" placeholder="Address" class="form-control mb-2"/>
+                            <br/>
+                            <label class="sr-only" for="password">Enter password: </label>
+                            <input type="password" th:value="*{password}" name="password" id="password" placeholder="Password" class="form-control mb-2"/>
+                            <br/>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                <td/>
+                <td>
+                  <a th:method="DELETE" th:href="@{admin/deleteUser/{id}(id = ${person.getId()})}">
+                    <button  class="btn btn-danger row justify-content-end"> Delete </button>
+                  </a>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
 </body>
 </html>

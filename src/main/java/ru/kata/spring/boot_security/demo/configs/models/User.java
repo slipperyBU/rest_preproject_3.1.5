@@ -1,10 +1,13 @@
 package ru.kata.spring.boot_security.demo.configs.models;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name ="users")
+@NamedEntityGraph(name = "User.roles", attributeNodes = @NamedAttributeNode("roles"))
 public class User {
     @Id
     @Column(name ="id")
@@ -23,13 +26,34 @@ public class User {
 
     @Column(name = "password")
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Collection<Role> roles;
+    private List<Role> roles = new ArrayList<>();
 
 
     public User() {
 
+    }
+
+    public User(Integer id, String name, String lastName, Integer age, String email, String address, String password, List<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.address = address;
+        this.password = password;
+        this.roles = roles;
+    }
+
+    public User(String name, String lastName, Integer age, String email, String address, String password, List<Role> roles) {
+        this.name = name;
+        this.lastName = lastName;
+        this.age = age;
+        this.email = email;
+        this.address = address;
+        this.password = password;
+        this.roles = roles;
     }
 
     public Integer getId() {
@@ -88,16 +112,16 @@ public class User {
         this.password = password;
     }
 
-    public Collection<Role> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(Collection<Role> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
     @Override
     public String toString() {
-        return name + " " + lastName;
+        return name;
     }
 }
