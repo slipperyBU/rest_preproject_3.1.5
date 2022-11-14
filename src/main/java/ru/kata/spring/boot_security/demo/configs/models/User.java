@@ -1,5 +1,8 @@
 package ru.kata.spring.boot_security.demo.configs.models;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,7 +29,8 @@ public class User {
 
     @Column(name = "password")
     private String password;
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @Fetch(FetchMode.JOIN)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles = new ArrayList<>();
 

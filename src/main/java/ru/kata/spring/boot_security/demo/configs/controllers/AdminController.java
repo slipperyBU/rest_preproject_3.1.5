@@ -30,18 +30,14 @@ public class AdminController {
         User user = userService.show(principal.getName());
         model.addAttribute("users", userService.index());
         model.addAttribute("userData",user);
-        Role roleInfo = roleService.index().get(0);
-        Role foundRole = roleService.show(roleInfo.getName());
-        model.addAttribute("roleInfo",roleInfo);
+        model.addAttribute("listOfRoles", roleService.index());
         return "index";
     }
 
     @GetMapping("/addNewUser")
     public String addUser(Model model, Principal principal) {
-        User user = new User();
-        User userInfo = userService.show(principal.getName());
-        model.addAttribute("user", user);
-        model.addAttribute("userInfo",userInfo);
+        model.addAttribute("user", new User());
+        model.addAttribute("userInfo",userService.show(principal.getName()));
         model.addAttribute("listOfRoles", roleService.index());
         return "new";
     }
@@ -54,21 +50,17 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @GetMapping("/edit/{id}")
-    public String edit(Model model, @PathVariable("id") int id){
-        model.addAttribute("user", userService.show(id));
-        return "editor";
-    }
+
     @PatchMapping("/update/{id}")
-    public String update(@ModelAttribute("user") User user,@PathVariable("id") int id){
-        this.userService.update(id,user);
+    public String update(@ModelAttribute("user") User user){
+        this.userService.update(user.getId(),user);
         return "redirect:/admin";
 
     }
 
     @GetMapping("/deleteUser/{id}")
-    public String delete(@ModelAttribute("user") User user, @PathVariable("id") int id){
-        userService.delete(id);
+    public String delete(@ModelAttribute("user") User user){
+        userService.delete(user.getId());
         return "redirect:/admin";
     }
 }

@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.configs.models;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.Collection;
@@ -13,7 +14,7 @@ public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Integer id;
+    private Long id;
     @Column(name = "name")
     private String name;
 
@@ -28,16 +29,16 @@ public class Role implements GrantedAuthority {
         this.name=name;
     }
 
-    public Role(Integer id, String name) {
+    public Role(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
