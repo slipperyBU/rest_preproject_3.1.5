@@ -11,12 +11,12 @@
     <form name='f' action="/login" method='POST' style="max-width: 300px; margin: 44px auto;">
 
         <div th:if="${param.error}" class="alert alert-warning" style="color: red;">
-            Wrong Name or Password
+            Wrong Email or Password
         </div>
         <h2 class="text-left">Please sign in</h2>
         <br/>
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
-            <input type='text' name='username' id="username" class="form-control" placeholder="Name" required autofocus/>
+            <input type='text' name='username' id="username" class="form-control" placeholder="Email address" required autofocus/>
             <input type='password' name='password' id="password" class="form-control" placeholder="Password" required />
         <br>
         <div>

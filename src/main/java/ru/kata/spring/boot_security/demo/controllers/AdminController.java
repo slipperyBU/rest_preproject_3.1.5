@@ -1,16 +1,14 @@
-package ru.kata.spring.boot_security.demo.configs.controllers;
+package ru.kata.spring.boot_security.demo.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.configs.models.Role;
-import ru.kata.spring.boot_security.demo.configs.models.User;
-import ru.kata.spring.boot_security.demo.configs.service.RoleService;
-import ru.kata.spring.boot_security.demo.configs.service.UserService;
+import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
@@ -45,7 +43,6 @@ public class AdminController {
 
     @PostMapping("/saveUser")
     public String create(@ModelAttribute("user") User user) {
-        user.setRoles(user.getRoles().stream().map(r->roleService.show(r.getName())).toList());
         userService.save(user);
         return "redirect:/admin";
     }
@@ -53,12 +50,13 @@ public class AdminController {
 
     @PatchMapping("/update/{id}")
     public String update(@ModelAttribute("user") User user){
+        user.setRoles(user.getRoles().stream().map(r->roleService.show(r.getName())).collect(Collectors.toSet()));
         this.userService.update(user.getId(),user);
         return "redirect:/admin";
 
     }
 
-    @GetMapping("/deleteUser/{id}")
+    @DeleteMapping("/deleteUser/{id}")
     public String delete(@ModelAttribute("user") User user){
         userService.delete(user.getId());
         return "redirect:/admin";

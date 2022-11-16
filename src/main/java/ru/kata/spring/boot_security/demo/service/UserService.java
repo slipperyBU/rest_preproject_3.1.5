@@ -1,12 +1,10 @@
-package ru.kata.spring.boot_security.demo.configs.service;
+package ru.kata.spring.boot_security.demo.service;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import ru.kata.spring.boot_security.demo.configs.models.User;
+import ru.kata.spring.boot_security.demo.models.User;
 
-import javax.transaction.Transactional;
 import java.util.List;
 
 public interface UserService extends UserDetailsService {
@@ -18,9 +16,8 @@ public interface UserService extends UserDetailsService {
 
     void delete(int id);
 
-
   @Override
   UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
-  User show(String name);
+  User show(String email);
 }

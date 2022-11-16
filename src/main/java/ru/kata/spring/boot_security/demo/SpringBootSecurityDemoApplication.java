@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 @SpringBootApplication
-@EnableJpaRepositories("ru.kata.spring.boot_security.demo.configs.repositories")
 public class SpringBootSecurityDemoApplication {
 
 	public static void main(String[] args) {

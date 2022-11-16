@@ -1,11 +1,9 @@
-package ru.kata.spring.boot_security.demo.configs.models;
+package ru.kata.spring.boot_security.demo.models;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "roles")
@@ -19,7 +17,7 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @ManyToMany(mappedBy = "roles")
-    private List<User> users;
+    private Set<User> users;
 
     public Role() {
 
@@ -50,21 +48,37 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-    public List<User> getUsers() {
+    public Set<User> getUsers() {
         return users;
     }
 
-    public void setUsers(List<User> users) {
+    public void setUsers(Set<User> users) {
         this.users = users;
     }
 
     @Override
     public String getAuthority() {
-        return name;
+        return getName();
     }
 
     @Override
     public String toString() {
-        return name;
+        return this.name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Role role = (Role) o;
+        return Objects.equals(id, role.id);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + ((id==null) ? 0 : id.hashCode());
+        result = 31 * result + ((name==null) ? 0 : name.hashCode());
+        return result;
     }
 }

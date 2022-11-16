@@ -1,17 +1,17 @@
-package ru.kata.spring.boot_security.demo.configs.models;
+package ru.kata.spring.boot_security.demo.models;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name ="users")
 @NamedEntityGraph(name = "User.roles", attributeNodes = @NamedAttributeNode("roles"))
-public class User {
+public class User implements UserDetails {
     @Id
     @Column(name ="id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,14 +32,19 @@ public class User {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @Fetch(FetchMode.JOIN)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private List<Role> roles = new ArrayList<>();
+    private Set<Role> roles= new HashSet<>();
 
 
     public User() {
 
     }
 
-    public User(Integer id, String name, String lastName, Integer age, String email, String address, String password, List<Role> roles) {
+    public User(String name,String password) {
+        this.name=name;
+        this.password=password;
+    }
+
+    public User(Integer id, String name, String lastName, Integer age, String email, String address, String password, Set<Role> roles) {
         this.id = id;
         this.name = name;
         this.lastName = lastName;
@@ -50,7 +55,7 @@ public class User {
         this.roles = roles;
     }
 
-    public User(String name, String lastName, Integer age, String email, String address, String password, List<Role> roles) {
+    public User(String name, String lastName, Integer age, String email, String address, String password, Set<Role> roles) {
         this.name = name;
         this.lastName = lastName;
         this.age = age;
@@ -108,19 +113,49 @@ public class User {
         this.address = address;
     }
 
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return getRoles();
+    }
+
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

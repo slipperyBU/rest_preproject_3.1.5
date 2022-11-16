@@ -1,4 +1,4 @@
-package ru.kata.spring.boot_security.demo.configs.service;
+package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -6,15 +6,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.kata.spring.boot_security.demo.configs.models.Role;
-import ru.kata.spring.boot_security.demo.configs.models.User;
-import ru.kata.spring.boot_security.demo.configs.repositories.RoleRepository;
-import ru.kata.spring.boot_security.demo.configs.repositories.UserRepository;
-import ru.kata.spring.boot_security.demo.configs.security.UserDetailsImpl;
+import ru.kata.spring.boot_security.demo.models.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 
 import javax.transaction.Transactional;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,6 +40,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public boolean save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setRoles(user.getRoles().stream().map(r -> roleRepository.findByName(r.getName())).collect(Collectors.toSet()));
         userRepository.save(user);
         return true;
     }
@@ -68,23 +66,23 @@ public class UserServiceImpl implements UserService {
         user.setAge(updatedUser.getAge());
         user.setEmail(updatedUser.getEmail());
         user.setAddress(updatedUser.getAddress());
+        user.setRoles(updatedUser.getRoles().stream().map(r -> roleRepository.findByName(r.getName())).collect(Collectors.toSet()));
         user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
-        userRepository.flush();
     }
 
     @Override
     public User show(String name) {
-        return userRepository.findByName(name);
+        return userRepository.findByEmail(name);
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-     User user = userRepository.findByName(username);
+     User user = userRepository.findByEmail(username);
 
      if (user == null) {
          throw new UsernameNotFoundException("User not located");
      }
-     return new UserDetailsImpl(user);
+     return user;
  }
 }
