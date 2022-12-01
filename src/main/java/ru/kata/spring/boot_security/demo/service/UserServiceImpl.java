@@ -67,7 +67,9 @@ public class UserServiceImpl implements UserService {
         user.setEmail(updatedUser.getEmail());
         user.setAddress(updatedUser.getAddress());
         user.setRoles(updatedUser.getRoles().stream().map(r -> roleRepository.findByName(r.getName())).collect(Collectors.toSet()));
-        user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        if (updatedUser.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+        }
     }
 
     @Override

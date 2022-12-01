@@ -49,15 +49,14 @@ public class AdminController {
 
 
     @PatchMapping("/update/{id}")
-    public String update(@ModelAttribute("user") User user){
-        user.setRoles(user.getRoles().stream().map(r->roleService.show(r.getName())).collect(Collectors.toSet()));
+    public String update(User user){
         this.userService.update(user.getId(),user);
         return "redirect:/admin";
 
     }
 
     @DeleteMapping("/deleteUser/{id}")
-    public String delete(@ModelAttribute("user") User user){
+    public String delete(User user){
         userService.delete(user.getId());
         return "redirect:/admin";
     }

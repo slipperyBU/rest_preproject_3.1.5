@@ -28,4 +28,8 @@ public class UserController {
         return "user";
     }
 
+    @GetMapping("/test")
+    public String test() {
+        return "test";
+    }
 }
