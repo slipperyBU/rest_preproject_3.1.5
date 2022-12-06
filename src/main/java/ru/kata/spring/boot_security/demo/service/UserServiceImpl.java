@@ -17,11 +17,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
     private RoleRepository roleRepository;
-
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository , @Lazy PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
@@ -30,9 +28,8 @@ public class UserServiceImpl implements UserService {
         this.roleRepository = roleRepository;
     }
 
-
     @Override
-    public List<User> index() {
+    public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
@@ -46,7 +43,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User show(int id) {
+    public User findById(int id) {
         return userRepository.findById(id).get();
     }
 
@@ -73,7 +70,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User show(String name) {
+    public User findByEmail(String name) {
         return userRepository.findByEmail(name);
     }
 

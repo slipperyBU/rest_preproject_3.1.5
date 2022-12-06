@@ -9,7 +9,6 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/admin")
@@ -25,18 +24,18 @@ public class AdminController {
 
     @GetMapping()
     public String index(Principal principal, Model model) {
-        User user = userService.show(principal.getName());
-        model.addAttribute("users", userService.index());
+        User user = userService.findByEmail(principal.getName());
+        model.addAttribute("users", userService.getAllUsers());
         model.addAttribute("userData",user);
-        model.addAttribute("listOfRoles", roleService.index());
+        model.addAttribute("listOfRoles", roleService.getAllRoles());
         return "index";
     }
 
     @GetMapping("/addNewUser")
     public String addUser(Model model, Principal principal) {
         model.addAttribute("user", new User());
-        model.addAttribute("userInfo",userService.show(principal.getName()));
-        model.addAttribute("listOfRoles", roleService.index());
+        model.addAttribute("userInfo",userService.findByEmail(principal.getName()));
+        model.addAttribute("listOfRoles", roleService.getAllRoles());
         return "new";
     }
 

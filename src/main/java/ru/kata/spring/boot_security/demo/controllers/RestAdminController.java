@@ -7,12 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.util.NoSuchUserException;
-import ru.kata.spring.boot_security.demo.util.UserIncorrect;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/rest")
+@RequestMapping("/rest/admin")
 public class RestAdminController {
 
     private final UserService userService;
@@ -24,12 +23,12 @@ public class RestAdminController {
 
     @GetMapping()
     public List<User> getAllUsers() {
-        return userService.index();
+        return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
     public User getUser(@PathVariable int id) {
-        User user = userService.show(id);
+        User user = userService.findById(id);
 
         if (user == null) {
             throw new NoSuchUserException("There is no user with ID= " +
